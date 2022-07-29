@@ -6,6 +6,7 @@ const Link = ({ to, children }) => {
     e.preventDefault();
     navigate(to);
   };
+
   return (
     <a href={to} onClick={handle}>
       {children}

@@ -12,7 +12,15 @@ const BrowserRouter = ({ children }) => {
 
   const history = historyRef.current;
 
-  return <Router children={children} naviagtor={history} />;
+  const [state, setState] = React.useState({ location: history.location });
+
+  React.useLayoutEffect(() => {
+    history.listen(setState);
+  }, [history]);
+
+  return (
+    <Router children={children} naviagtor={history} location={state.location} />
+  );
 };
 
 export default BrowserRouter;
