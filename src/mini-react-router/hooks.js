@@ -1,40 +1,31 @@
 import React from 'react';
+import { matchRoutes } from 'react-router-dom';
 import { NavigationContext, RouteContext } from './Context';
-import Outlet from './Outlet';
-import { normalizePathname } from './utils';
 
 export function useRoutes(routes) {
-  // 遍历routes，渲染匹配的route
-
   const location = useLocation();
 
-  let pathname = location.pathname;
+  const pathname = location.pathname;
 
-  return routes.map((route) => {
-    let match = pathname.startsWith(route.path);
+  const matches = matchRoutes(routes, { pathname });
+  console.log('matches', matches);
 
-    // return match ? route.element : null;
+  return renderMatches(matches);
+}
 
-    // let matches = pathname.startsWith(route.path) ? {}: false;
-    console.log("route", pathname, route);
+function renderMatches(matches) {
+  if (matches === null) {
+    return null;
+  }
+
+  return matches.reduceRight((outlet, match) => {
     return (
-      match &&
-      route.children.map((child) => {
-        let m = normalizePathname(child.path || '/') === pathname;
-
-        return (
-          m && (
-            <RouteContext.Provider
-              value={{ outlet: child.element }}
-              children={
-                route.element !== undefined ? route.element : <Outlet />
-              }
-            />
-          )
-        );
-      })
+      <RouteContext.Provider
+        value={{ outlet, matches }}
+        children={match.route.element || outlet}
+      />
     );
-  });
+  }, null);
 }
 
 export function useNavigate() {
@@ -46,11 +37,21 @@ export function useNavigate() {
 
 export function useLocation() {
   const { location } = React.useContext(NavigationContext);
+
   return location;
+}
+
+export function useParams() {
+  const { matches } = React.useContext(RouteContext);
+
+  const routeMatch = matches[matches.length - 1];
+
+  return routeMatch ? routeMatch.params : {};
 }
 
 // children
 export function useOutlet() {
   const { outlet } = React.useContext(RouteContext);
+
   return outlet;
 }
