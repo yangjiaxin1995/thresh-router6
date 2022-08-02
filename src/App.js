@@ -1,14 +1,3 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-  Outlet,
-  useNavigate,
-  useParams,
-  Navigate,
-  useLocation,
-} from "react-router-dom";
 // import {
 //   BrowserRouter as Router,
 //   Routes,
@@ -17,7 +6,20 @@ import {
 //   Outlet,
 //   useNavigate,
 //   useParams,
-// } from './mini-react-router';
+//   Navigate,
+//   useLocation,
+// } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  Outlet,
+  Navigate,
+  useNavigate,
+  useParams,
+  useLocation,
+} from './mini-react-router';
 import { AuthProvider, useAuth } from './Auth';
 
 export default function App(props) {
@@ -98,7 +100,7 @@ function RequiredAuth({ children }) {
   const location = useLocation();
 
   if (!auth.user) {
-    return <Navigate to={"/login"} state={{ from: location }} replace={true} />;
+    return <Navigate to={'/login'} state={{ from: location }} replace={true} />;
   }
 
   return children;
@@ -114,7 +116,7 @@ function User() {
       <p>{auth.user?.username}</p>
       <button
         onClick={() => {
-          auth.signout(() => navigate("/login"));
+          auth.signout(() => navigate('/login'));
         }}
       >
         退出登录
@@ -127,7 +129,7 @@ function Login() {
   const auth = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from.pathname || "/";
+  const from = location.state?.from.pathname || '/';
 
   if (auth.user) {
     return <Navigate to={from} />;
@@ -135,7 +137,7 @@ function Login() {
 
   const submit = (e) => {
     const formData = new FormData(e.currentTarget);
-    const username = formData.get("username");
+    const username = formData.get('username');
     auth.signin({ username }, () => {
       navigate(from, { replace: true });
     });

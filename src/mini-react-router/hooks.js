@@ -32,7 +32,22 @@ export function useNavigate() {
   // 跳转
   const { naviagtor } = React.useContext(NavigationContext);
 
-  return naviagtor.push;
+  const navigate = React.useCallback(
+    (to, options = {}) => {
+      if (typeof to === 'number') {
+        navigator.go(to);
+        return;
+      }
+
+      (!!options.replace ? naviagtor.replace : naviagtor.push)(
+        to,
+        options.state
+      );
+    },
+    [naviagtor]
+  );
+
+  return navigate;
 }
 
 export function useLocation() {
