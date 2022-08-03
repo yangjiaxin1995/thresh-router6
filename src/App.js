@@ -1,4 +1,18 @@
 import React from 'react';
+// import {
+//   BrowserRouter as Router,
+//   Routes,
+//   Route,
+//   Link,
+//   NavLink,
+//   Outlet,
+//   Navigate,
+//   useNavigate,
+//   useParams,
+//   useLocation,
+//   useResolvedPath,
+//   useMatch,
+// } from 'react-router-dom';
 import {
   BrowserRouter as Router,
   Routes,
@@ -9,18 +23,9 @@ import {
   useNavigate,
   useParams,
   useLocation,
-} from 'react-router-dom';
-// import {
-//   BrowserRouter as Router,
-//   Routes,
-//   Route,
-//   Link,
-//   Outlet,
-//   Navigate,
-//   useNavigate,
-//   useParams,
-//   useLocation,
-// } from './mini-react-router';
+  useResolvedPath,
+  useMatch,
+} from './mini-react-router';
 import { AuthProvider, useAuth } from './Auth';
 
 const About = React.lazy(() => import('./pages/About'));
@@ -62,14 +67,37 @@ export default function App(props) {
   );
 }
 
+function CustomLink({ children, to, ...props }) {
+  // return (
+  //   <NavLink
+  //     to={to}
+  //     {...props}
+  //     style={({ isActive }) => ({ color: isActive ? 'red' : '#333' })}
+  //     children={children}
+  //   />
+  // );
+
+  const resolved = useResolvedPath(to);
+  const match = useMatch({ path: resolved.pathname, end: true });
+
+  return (
+    <Link
+      style={{ color: match ? 'red' : '#333' }}
+      to={to}
+      {...props}
+      children={children}
+    />
+  );
+}
+
 function Layout(props) {
   return (
     <div className="border">
-      <Link to="/">首页</Link>
-      <Link to="/product">商品</Link>
-      <Link to="/user">用户中心</Link>
+      <CustomLink to="/">首页</CustomLink>
+      <CustomLink to="/product">商品</CustomLink>
+      <CustomLink to="/user">用户中心</CustomLink>
       {/* <Link to="/login">登录</Link> */}
-      <Link to="/about">关于</Link>
+      <CustomLink to="/about">关于</CustomLink>
 
       <Outlet />
     </div>
@@ -89,7 +117,7 @@ function Product() {
     <div>
       <h1>Product</h1>
       {/* <Link to="123">商品详情</Link> */}
-      <Link to="/product/123">商品详情</Link>
+      <CustomLink to="/product/123">商品详情</CustomLink>
       <Outlet />
     </div>
   );

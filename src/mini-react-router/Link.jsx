@@ -1,6 +1,6 @@
 import { useNavigate } from './hooks';
 
-const Link = ({ to, children }) => {
+const Link = ({ to, children, ...props }) => {
   const navigate = useNavigate();
   const handle = (e) => {
     e.preventDefault();
@@ -8,7 +8,7 @@ const Link = ({ to, children }) => {
   };
 
   return (
-    <a href={to} onClick={handle}>
+    <a {...props} href={to} onClick={handle}>
       {children}
     </a>
   );
